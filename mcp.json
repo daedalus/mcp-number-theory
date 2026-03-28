@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "mcp-number-theory": {
+      "command": "mcp-number-theory",
+      "env": {}
+    }
+  }
+}
