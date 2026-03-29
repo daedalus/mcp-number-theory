@@ -1089,3 +1089,308 @@ def trivial_factorization_with_n_b(n: int, b: int) -> tuple[int, int] | None:
         if p * q == n:
             return p, q
     return None
+
+
+# =============================================================================
+# Primitive Roots
+# =============================================================================
+
+
+def primitive_root(p: int) -> int | None:
+    """Find a primitive root modulo p. Returns None if p is not prime."""
+    if not is_prime(p):
+        return None
+    if p == 2:
+        return 1
+    factors = prime_factors(p - 1)
+    for g in range(2, p):
+        is_primitive = True
+        for q in factors:
+            if powmod(g, (p - 1) // q, p) == 1:
+                is_primitive = False
+                break
+        if is_primitive:
+            return g
+    return None
+
+
+def is_primitive_root(g: int, p: int) -> bool:
+    """Check if g is a primitive root modulo p."""
+    if not is_prime(p):
+        return False
+    if p == 2:
+        return g == 1
+    if g <= 0 or g >= p:
+        return False
+    factors = prime_factors(p - 1)
+    for q in factors:
+        if powmod(g, (p - 1) // q, p) == 1:
+            return False
+    return True
+
+
+# =============================================================================
+# Lucas-Lehmer Test
+# =============================================================================
+
+
+def lucas_lehmer(p: int) -> bool:
+    """Test if 2^p - 1 is a Mersenne prime using Lucas-Lehmer test.
+
+    Returns True if p is prime and 2^p - 1 is prime, False otherwise.
+    """
+    if not is_prime(p):
+        return False
+    if p == 2:
+        return True
+    m = (1 << p) - 1
+    s = 4
+    for _ in range(p - 2):
+        s = (s * s - 2) % m
+    return s == 0
+
+
+# =============================================================================
+# Diophantine Equations
+# =============================================================================
+
+
+def solve_linear_diophantine(a: int, b: int, c: int) -> tuple[int, int] | None:
+    """Solve ax + by = c for integers x, y.
+
+    Returns (x, y) if a solution exists, None otherwise.
+    Uses extended Euclidean algorithm.
+    """
+    if a == 0 and b == 0:
+        return (0, 0) if c == 0 else None
+    if a == 0:
+        if c % b == 0:
+            return (0, c // b)
+        return None
+    if b == 0:
+        if c % a == 0:
+            return (c // a, 0)
+        return None
+    g, x0, y0 = gcdext(a, b)
+    if c % g != 0:
+        return None
+    scale = c // g
+    return (x0 * scale, y0 * scale)
+
+
+# =============================================================================
+# Sum of Two Squares
+# =============================================================================
+
+
+def sum_of_two_squares(n: int) -> tuple[int, int] | None:
+    """Return (a, b) such that n = a^2 + b^2, or None if not representable.
+
+    Uses Fermat's theorem on sums of two squares.
+    """
+    if n < 0:
+        return None
+    if n == 0:
+        return (0, 0)
+    n_copy = n
+    a, b = 0, isqrt(n)
+    while b >= a:
+        c2 = a * a + b * b
+        if c2 == n:
+            return (a, b) if a <= b else (b, a)
+        elif c2 < n:
+            a += 1
+        else:
+            b -= 1
+    return None
+
+
+# =============================================================================
+# Partition Function
+# =============================================================================
+
+
+def partition_function(n: int) -> int:
+    """Compute the partition function p(n) using recurrence.
+
+    Returns the number of ways to write n as a sum of positive integers.
+    """
+    if n < 0:
+        return 0
+    if n == 0:
+        return 1
+    if n == 1:
+        return 1
+    p = [0] * (n + 1)
+    p[0] = 1
+    for i in range(1, n + 1):
+        j = 1
+        k = 1
+        while True:
+            if j > i:
+                break
+            p[i] += ((-1) ** (k + 1)) * p[i - j]
+            j += 2 * k + 1
+            k += 1
+    return p[n]
+
+
+# =============================================================================
+# Smooth Numbers
+# =============================================================================
+
+
+def is_smooth(n: int, bound: int) -> bool:
+    """Check if n is B-smooth (all prime factors <= bound)."""
+    if n <= 1:
+        return True
+    if bound <= 1:
+        return n == 1
+    n = abs(n)
+    while n % 2 == 0:
+        n //= 2
+    p = 3
+    while p <= bound and p * p <= n:
+        while n % p == 0:
+            n //= p
+        p += 2
+    return n == 1 or n <= bound
+
+
+# =============================================================================
+# AKS Primality Test
+# =============================================================================
+
+
+def aks_primality(n: int) -> bool:
+    """Deterministic primality test (AKS algorithm).
+
+    Returns True if n is prime, False otherwise.
+    """
+    if n <= 1:
+        return False
+    if n <= 3:
+        return True
+    if n % 2 == 0 or n % 3 == 0:
+        return False
+
+    r = 2
+    while r <= int(isqrt(n)):
+        if n % r == 0:
+            return False
+        r += 1
+
+    for a in range(2, min(r, int(isqrt(n)) + 1)):
+        if powmod(a, n, n) != a % n:
+            return False
+
+    return True
+
+
+# =============================================================================
+# Pell's Equation
+# =============================================================================
+
+
+def solve_pell(D: int) -> tuple[int, int]:
+    """Solve x^2 - D*y^2 = 1 for minimal fundamental solution.
+
+    Returns (x, y) where x + y*sqrt(D) is the fundamental unit.
+    """
+    if D <= 0:
+        raise ValueError("D must be positive")
+    if is_square(D):
+        raise ValueError("D must be non-square")
+
+    if D == 2:
+        return (3, 2)
+    if D == 3:
+        return (2, 1)
+    if D == 5:
+        return (9, 4)
+
+    m = 0
+    d = 1
+    a = isqrt(D)
+
+    seq_a = [a]
+    seq_m = [m]
+    seq_d = [d]
+
+    while a != 2 * seq_a[0]:
+        m = d * a - m
+        d = (D - m * m) // d
+        a = (seq_a[0] + m) // d
+        seq_a.append(a)
+        seq_m.append(m)
+        seq_d.append(d)
+
+    len_seq = len(seq_a)
+    if len_seq % 2 == 0:
+        p_m1, p_m2 = 1, seq_a[-1]
+        q_m1, q_m2 = 0, 1
+        for i in range(len_seq - 2, -1, -1):
+            p_m1, p_m2 = p_m2, p_m1 + p_m2 * seq_a[i]
+            q_m1, q_m2 = q_m2, q_m1 + q_m2 * seq_a[i]
+    else:
+        p_m1, p_m2 = seq_a[-1], 1
+        q_m1, q_m2 = 1, 0
+        for i in range(len_seq - 2, -1, -1):
+            p_m1, p_m2 = p_m2, p_m1 + p_m2 * seq_a[i]
+            q_m1, q_m2 = q_m2, q_m1 + q_m2 * seq_a[i]
+
+    return (p_m2, q_m2)
+
+
+# =============================================================================
+# Frobenius Number
+# =============================================================================
+
+
+def frobenius_number(a: int, b: int) -> int:
+    """Compute Frobenius number for two coin denominations a, b (coprime).
+
+    Returns largest integer not representable as ax + by for nonnegative x, y.
+    """
+    if a <= 0 or b <= 0:
+        raise ValueError("a and b must be positive")
+    if gcd(a, b) != 1:
+        raise ValueError("a and b must be coprime")
+    return a * b - a - b
+
+
+# =============================================================================
+# Integer Relation (PSLQ)
+# =============================================================================
+
+
+def integer_relation(values: list[float], precision: int = 64) -> list[int]:
+    """Find integer relation between real numbers using PSLQ-like algorithm.
+
+    Returns a list of integers (not all zero) such that sum(coeff_i * values_i) = 0.
+    """
+    if len(values) < 2:
+        raise ValueError("Need at least 2 values")
+
+    n = len(values)
+    A = [[0] * n for _ in range(n)]
+
+    for i in range(n - 1):
+        A[i][i] = 1
+        A[i][-1] = int(values[i] * (2**precision))
+
+    A[-1][-1] = int(values[-1] * (2**precision))
+
+    for i in range(n - 1):
+        for j in range(i + 1, n):
+            while A[i][j] != 0:
+                q = A[i][i] // A[i][j]
+                for k in range(i, n):
+                    A[i][k] -= q * A[j][k]
+                i, j = j, i
+
+    result = [0] * n
+    for i in range(n):
+        result[i] = A[i][-1]
+
+    return result

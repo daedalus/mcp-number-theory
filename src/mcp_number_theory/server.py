@@ -496,3 +496,42 @@ def kronecker_symbol(a: int, n: int) -> int:
 def best_rational_approximation(x: float, max_denom: int) -> tuple[int, int]:
     """Find best rational approximation to x with denominator <= max_denom."""
     return nt.best_rational_approximation(x, max_denom)
+
+
+# =============================================================================
+# Primitive Roots
+# =============================================================================
+
+
+@mcp.tool()
+def primitive_root(p: int) -> int | None:
+    """Find a primitive root modulo p. Returns None if p is not prime."""
+    return nt.primitive_root(p)
+
+
+@mcp.tool()
+def is_primitive_root(g: int, p: int) -> bool:
+    """Check if g is a primitive root modulo p."""
+    return nt.is_primitive_root(g, p)
+
+
+# =============================================================================
+# Lucas-Lehmer Test
+# =============================================================================
+
+
+@mcp.tool()
+def lucas_lehmer(p: int) -> bool:
+    """Test if 2^p - 1 is a Mersenne prime using Lucas-Lehmer test."""
+    return nt.lucas_lehmer(p)
+
+
+# =============================================================================
+# Diophantine Equations
+# =============================================================================
+
+
+@mcp.tool()
+def solve_linear_diophantine(a: int, b: int, c: int) -> tuple[int, int] | None:
+    """Solve ax + by = c for integers x, y. Returns (x, y) or None if no solution."""
+    return nt.solve_linear_diophantine(a, b, c)

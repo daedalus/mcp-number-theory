@@ -341,3 +341,80 @@ class TestHenselLiftCubic:
 
         with pytest.raises(ValueError):
             nt.hensel_lift_cubic(1, 0, 0, -2, 0, 5, 3)
+
+
+class TestPrimitiveRoot:
+    def test_primitive_root_3(self):
+        result = nt.primitive_root(3)
+        assert result == 2
+
+    def test_primitive_root_5(self):
+        result = nt.primitive_root(5)
+        assert result == 2 or result == 3
+
+    def test_primitive_root_7(self):
+        result = nt.primitive_root(7)
+        assert result == 3
+
+    def test_primitive_root_composite(self):
+        assert nt.primitive_root(8) is None
+
+    def test_is_primitive_root(self):
+        assert nt.is_primitive_root(2, 5) is True
+        assert nt.is_primitive_root(3, 5) is True
+        assert nt.is_primitive_root(4, 5) is False
+
+    def test_is_primitive_root_composite(self):
+        assert nt.is_primitive_root(2, 8) is False
+
+
+class TestLucasLehmer:
+    def test_lucas_lehmer_2(self):
+        assert nt.lucas_lehmer(2) is True
+
+    def test_lucas_lehmer_3(self):
+        assert nt.lucas_lehmer(3) is True
+
+    def test_lucas_lehmer_5(self):
+        assert nt.lucas_lehmer(5) is True
+
+    def test_lucas_lehmer_7(self):
+        assert nt.lucas_lehmer(7) is True
+
+    def test_lucas_lehmer_11(self):
+        assert nt.lucas_lehmer(11) is False
+
+    def test_lucas_lehmer_composite(self):
+        assert nt.lucas_lehmer(15) is False
+
+
+class TestSolveLinearDiophantine:
+    def test_simple_solution(self):
+        result = nt.solve_linear_diophantine(2, 3, 5)
+        assert result is not None
+        x, y = result
+        assert 2 * x + 3 * y == 5
+
+    def test_no_solution(self):
+        assert nt.solve_linear_diophantine(2, 4, 5) is None
+
+    def test_zero_a(self):
+        result = nt.solve_linear_diophantine(0, 3, 6)
+        assert result == (0, 2)
+
+    def test_zero_b(self):
+        result = nt.solve_linear_diophantine(4, 0, 8)
+        assert result == (2, 0)
+
+    def test_both_zero_c(self):
+        result = nt.solve_linear_diophantine(0, 0, 0)
+        assert result == (0, 0)
+
+    def test_both_zero_non_zero_c(self):
+        assert nt.solve_linear_diophantine(0, 0, 5) is None
+
+    def test_gcd_case(self):
+        result = nt.solve_linear_diophantine(12, 18, 30)
+        assert result is not None
+        x, y = result
+        assert 12 * x + 18 * y == 30

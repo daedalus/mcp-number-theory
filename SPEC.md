@@ -35,6 +35,11 @@ An MCP server that exposes number theory functions and factorization algorithms 
 - `hensel_lift_square(a, p, k)` - Lift square root from mod p to mod p^k
 - `hensel_lift_quadratic(a, b, c, x0, p, k)` - Lift root of ax^2+bx+c
 - `hensel_lift_cubic(a, b, c, d, x0, p, k)` - Lift root of ax^3+bx^2+cx+d
+- `primitive_root(p)` - Find primitive root modulo p
+- `is_primitive_root(g, p)` - Check if g is primitive root modulo p
+- `lucas_lehmer(p)` - Test if 2^p-1 is a Mersenne prime
+- `solve_linear_diophantine(a, b, c)` - Solve ax + by = c
+- `discrete_log(g, h, p)` - Discrete log via baby-step giant-step
 - `dlp_bruteforce(g, h, p)` - Discrete log brute force
 - `fac(n)` - Factorial
 - `lucas(n)` - Lucas number
