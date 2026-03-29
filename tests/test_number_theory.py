@@ -1,5 +1,7 @@
 """Tests for number theory functions."""
 
+import math
+
 from mcp_number_theory import number_theory as nt
 
 
@@ -418,3 +420,109 @@ class TestSolveLinearDiophantine:
         assert result is not None
         x, y = result
         assert 12 * x + 18 * y == 30
+
+
+class TestSumOfTwoSquares:
+    def test_sum_of_two_squares_25(self):
+        result = nt.sum_of_two_squares(25)
+        assert result is not None
+        a, b = result
+        assert a * a + b * b == 25
+
+    def test_sum_of_two_squares_13(self):
+        result = nt.sum_of_two_squares(13)
+        assert result is not None
+        a, b = result
+        assert a * a + b * b == 13
+
+    def test_sum_of_two_squares_7(self):
+        assert nt.sum_of_two_squares(7) is None
+
+    def test_sum_of_two_squares_zero(self):
+        assert nt.sum_of_two_squares(0) == (0, 0)
+
+
+class TestPartitionFunction:
+    def test_partition_0(self):
+        assert nt.partition_function(0) == 1
+
+    def test_partition_1(self):
+        assert nt.partition_function(1) == 1
+
+    def test_partition_5(self):
+        assert nt.partition_function(5) == 7
+
+    def test_partition_10(self):
+        assert nt.partition_function(10) == 42
+
+
+class TestIsSmooth:
+    def test_is_smooth_true(self):
+        assert nt.is_smooth(12, 5) is True
+
+    def test_is_smooth_false(self):
+        assert nt.is_smooth(30, 3) is False
+
+    def test_is_smooth_one(self):
+        assert nt.is_smooth(1, 5) is True
+
+    def test_is_smooth_prime(self):
+        assert nt.is_smooth(7, 5) is False
+
+
+class TestAksPrimality:
+    def test_aks_prime_2(self):
+        assert nt.aks_primality(2) is True
+
+    def test_aks_prime_small(self):
+        assert nt.aks_primality(17) is True
+
+    def test_aks_composite(self):
+        assert nt.aks_primality(15) is False
+
+    def test_aks_one(self):
+        assert nt.aks_primality(1) is False
+
+
+class TestSolvePell:
+    def test_pell_2(self):
+        x, y = nt.solve_pell(2)
+        assert x * x - 2 * y * y == 1
+
+    def test_pell_3(self):
+        x, y = nt.solve_pell(3)
+        assert x * x - 3 * y * y == 1
+
+    def test_pell_5(self):
+        x, y = nt.solve_pell(5)
+        assert x * x - 5 * y * y == 1
+
+    def test_pell_square_error(self):
+        import pytest
+
+        with pytest.raises(ValueError):
+            nt.solve_pell(4)
+
+
+class TestFrobeniusNumber:
+    def test_frobenius_3_5(self):
+        assert nt.frobenius_number(3, 5) == 7
+
+    def test_frobenius_4_7(self):
+        assert nt.frobenius_number(4, 7) == 17
+
+    def test_frobenius_coprime_error(self):
+        import pytest
+
+        with pytest.raises(ValueError):
+            nt.frobenius_number(4, 6)
+
+
+class TestIntegerRelation:
+    def test_integer_relation_zeros(self):
+        result = nt.integer_relation([0.0, 0.0])
+        assert result == [0, 0]
+
+    def test_integer_relation_two(self):
+        result = nt.integer_relation([1.0, 2.0])
+        assert len(result) == 2

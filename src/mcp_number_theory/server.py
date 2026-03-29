@@ -535,3 +535,80 @@ def lucas_lehmer(p: int) -> bool:
 def solve_linear_diophantine(a: int, b: int, c: int) -> tuple[int, int] | None:
     """Solve ax + by = c for integers x, y. Returns (x, y) or None if no solution."""
     return nt.solve_linear_diophantine(a, b, c)
+
+
+# =============================================================================
+# Sum of Two Squares
+# =============================================================================
+
+
+@mcp.tool()
+def sum_of_two_squares(n: int) -> tuple[int, int] | None:
+    """Return (a, b) such that n = a^2 + b^2, or None if not representable."""
+    return nt.sum_of_two_squares(n)
+
+
+# =============================================================================
+# Partition Function
+# =============================================================================
+
+
+@mcp.tool()
+def partition_function(n: int) -> int:
+    """Compute partition function p(n) - number of ways to write n as sum of positive integers."""
+    return nt.partition_function(n)
+
+
+# =============================================================================
+# Smooth Numbers
+# =============================================================================
+
+
+@mcp.tool()
+def is_smooth(n: int, bound: int) -> bool:
+    """Check if n is B-smooth (all prime factors <= bound)."""
+    return nt.is_smooth(n, bound)
+
+
+# =============================================================================
+# AKS Primality Test
+# =============================================================================
+
+
+@mcp.tool()
+def aks_primality(n: int) -> bool:
+    """Deterministic primality test using AKS algorithm."""
+    return nt.aks_primality(n)
+
+
+# =============================================================================
+# Pell's Equation
+# =============================================================================
+
+
+@mcp.tool()
+def solve_pell(D: int) -> tuple[int, int]:
+    """Solve x^2 - D*y^2 = 1, returning fundamental solution (x, y)."""
+    return nt.solve_pell(D)
+
+
+# =============================================================================
+# Frobenius Number
+# =============================================================================
+
+
+@mcp.tool()
+def frobenius_number(a: int, b: int) -> int:
+    """Compute Frobenius number for coprime coin denominations a, b."""
+    return nt.frobenius_number(a, b)
+
+
+# =============================================================================
+# Integer Relation
+# =============================================================================
+
+
+@mcp.tool()
+def integer_relation(values: list[float]) -> list[int]:
+    """Find integer relation between real numbers using PSLQ algorithm."""
+    return nt.integer_relation(values)

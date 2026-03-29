@@ -41,6 +41,30 @@ An MCP server that exposes number theory functions and factorization algorithms 
 - `solve_linear_diophantine(a, b, c)` - Solve ax + by = c
 - `discrete_log(g, h, p)` - Discrete log via baby-step giant-step
 - `dlp_bruteforce(g, h, p)` - Discrete log brute force
+- `jacobi(a, n)` - Jacobi symbol
+- `mobius(n)` - Möbius function
+- `carmichael_lambda(n)` - Carmichael function
+- `is_square_free(n)` - Check if square-free
+- `prime_factors(n)` - Distinct prime factors
+- `divisors(n)` - All positive divisors
+- `num_divisors(n)` - Number of divisors (tau)
+- `sum_divisors(n)` - Sum of divisors (sigma)
+- `aliquot_sum(n)` - Sum of proper divisors
+- `is_sophie_germain(p)` - Sophie Germain prime check
+- `is_safe_prime(p)` - Safe prime check
+- `prime_counting(x)` - Count primes <= x
+- `nth_prime(n)` - n-th prime
+- `is_prime_power(n)` - Check if p^k form
+- `multiplicative_order(a, n)` - Multiplicative order
+- `kronecker_symbol(a, n)` - Kronecker symbol
+- `best_rational_approximation(x, d)` - Best rational approximation
+- `sum_of_two_squares(n)` - Sum of two squares representation
+- `partition_function(n)` - Partition function p(n)
+- `is_smooth(n, b)` - Check if B-smooth
+- `aks_primality(n)` - AKS primality test
+- `solve_pell(D)` - Fundamental solution to x^2 - Dy^2 = 1
+- `frobenius_number(a, b)` - Frobenius number for a, b coprime
+- `integer_relation(values)` - Find integer relation
 - `fac(n)` - Factorial
 - `lucas(n)` - Lucas number
 - `is_lucas(n)` - Check if Lucas number
