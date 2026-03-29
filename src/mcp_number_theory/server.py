@@ -148,6 +148,18 @@ def hensel_lift_square(a: int, p: int, k: int) -> int | None:
 
 
 @mcp.tool()
+def hensel_lift_quadratic(a: int, b: int, c: int, x0: int, p: int, k: int) -> int:
+    """Lift root of ax^2 + bx + c ≡ 0 from mod p to mod p^k."""
+    return nt.hensel_lift_quadratic(a, b, c, x0, p, k)
+
+
+@mcp.tool()
+def hensel_lift_cubic(a: int, b: int, c: int, d: int, x0: int, p: int, k: int) -> int:
+    """Lift root of ax^3 + bx^2 + cx + d ≡ 0 from mod p to mod p^k."""
+    return nt.hensel_lift_cubic(a, b, c, d, x0, p, k)
+
+
+@mcp.tool()
 def dlp_bruteforce(g: int, h: int, p: int) -> int | None:
     """Solve discrete logarithm by brute force: find x such that g^x ≡ h (mod p)."""
     return nt.dlp_bruteforce(g, h, p)

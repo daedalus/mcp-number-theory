@@ -301,3 +301,43 @@ class TestHenselLift:
 
         with pytest.raises(ValueError):
             nt.hensel_lift(f, df, 0, 5, 3)
+
+
+class TestHenselLiftQuadratic:
+    def test_hensel_lift_quadratic_simple(self):
+        result = nt.hensel_lift_quadratic(1, 0, -2, 3, 7, 3)
+        assert pow(result, 2, 343) == 2
+
+    def test_hensel_lift_quadratic_x2_plus_1(self):
+        result = nt.hensel_lift_quadratic(1, 0, -5, 4, 11, 2)
+        assert pow(result, 2, 121) == 5
+
+    def test_hensel_lift_quadratic_k1(self):
+        result = nt.hensel_lift_quadratic(1, 0, -3, 5, 11, 1)
+        assert result == 5
+
+    def test_hensel_lift_quadratic_invalid_derivative(self):
+        import pytest
+
+        with pytest.raises(ValueError):
+            nt.hensel_lift_quadratic(1, 0, -2, 0, 5, 3)
+
+
+class TestHenselLiftCubic:
+    def test_hensel_lift_cubic_simple(self):
+        result = nt.hensel_lift_cubic(1, 0, 0, -2, 3, 5, 2)
+        assert pow(result, 3, 25) == 2
+
+    def test_hensel_lift_cubic_x3_minus_2(self):
+        result = nt.hensel_lift_cubic(1, 0, 0, -2, 3, 5, 2)
+        assert pow(result, 3, 25) == 2
+
+    def test_hensel_lift_cubic_k1(self):
+        result = nt.hensel_lift_cubic(1, 0, 0, -2, 3, 5, 1)
+        assert result == 3
+
+    def test_hensel_lift_cubic_invalid_derivative(self):
+        import pytest
+
+        with pytest.raises(ValueError):
+            nt.hensel_lift_cubic(1, 0, 0, -2, 0, 5, 3)

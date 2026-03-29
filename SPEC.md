@@ -33,6 +33,8 @@ An MCP server that exposes number theory functions and factorization algorithms 
 - `tonelli(n, p)` - Tonelli-Shanks sqrt
 - `p_adic_valuation(n, p)` - p-adic valuation (exponent of p dividing n)
 - `hensel_lift_square(a, p, k)` - Lift square root from mod p to mod p^k
+- `hensel_lift_quadratic(a, b, c, x0, p, k)` - Lift root of ax^2+bx+c
+- `hensel_lift_cubic(a, b, c, d, x0, p, k)` - Lift root of ax^3+bx^2+cx+d
 - `dlp_bruteforce(g, h, p)` - Discrete log brute force
 - `fac(n)` - Factorial
 - `lucas(n)` - Lucas number

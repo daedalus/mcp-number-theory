@@ -604,6 +604,56 @@ def hensel_lift(
     return x
 
 
+def hensel_lift_quadratic(a: int, b: int, c: int, x0: int, p: int, k: int) -> int:
+    """Lift root of ax^2 + bx + c ≡ 0 from mod p to mod p^k.
+
+    Args:
+        a, b, c: Quadratic polynomial coefficients
+        x0: Root modulo p (must satisfy a*x0^2 + b*x0 + c ≡ 0 (mod p))
+        p: Prime modulus
+        k: Target power (lifts to mod p^k)
+
+    Returns:
+        Root x of ax^2 + bx + c ≡ 0 (mod p^k)
+    """
+    df0 = 2 * a * x0 + b
+    if legendre(df0 % p, p) == 0:
+        raise ValueError("Derivative must be non-zero at the root modulo p")
+    x = x0 % p
+    modulus = p
+    for _ in range(1, k):
+        modulus *= p
+        f_x = (a * x * x + b * x + c) % modulus
+        df_x = (2 * a * x + b) % modulus
+        x = (x - f_x * invmod(df_x, modulus)) % modulus
+    return x
+
+
+def hensel_lift_cubic(a: int, b: int, c: int, d: int, x0: int, p: int, k: int) -> int:
+    """Lift root of ax^3 + bx^2 + cx + d ≡ 0 from mod p to mod p^k.
+
+    Args:
+        a, b, c, d: Cubic polynomial coefficients
+        x0: Root modulo p
+        p: Prime modulus
+        k: Target power (lifts to mod p^k)
+
+    Returns:
+        Root x of ax^3 + bx^2 + cx + d ≡ 0 (mod p^k)
+    """
+    df0 = 3 * a * x0 * x0 + 2 * b * x0 + c
+    if legendre(df0 % p, p) == 0:
+        raise ValueError("Derivative must be non-zero at the root modulo p")
+    x = x0 % p
+    modulus = p
+    for _ in range(1, k):
+        modulus *= p
+        f_x = (a * x * x * x + b * x * x + c * x + d) % modulus
+        df_x = (3 * a * x * x + 2 * b * x + c) % modulus
+        x = (x - f_x * invmod(df_x, modulus)) % modulus
+    return x
+
+
 def dlp_bruteforce(g: int, h: int, p: int) -> int | None:
     """Solve discrete logarithm problem by brute force: find x such that g^x ≡ h (mod p)."""
     for x in range(1, p):
