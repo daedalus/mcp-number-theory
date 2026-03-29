@@ -129,8 +129,90 @@ class TestIsLucas:
     def test_is_lucas_true(self):
         assert nt.is_lucas(3) is True
 
-    def test_is_lucas_false(self):
+    def test_is_lucas_4(self):
         assert nt.is_lucas(4) is True
+
+    def test_is_lucas_false(self):
+        assert nt.is_lucas(5) is False
+
+
+class TestA000265:
+    def test_A000265_basic(self):
+        assert nt.A000265(12) == 3
+
+    def test_A000265_power_of_2(self):
+        assert nt.A000265(16) == 1
+
+    def test_A000265_odd(self):
+        assert nt.A000265(15) == 15
+
+
+class TestA135481:
+    def test_A135481_basic(self):
+        assert nt.A135481(12) == 3
+
+    def test_A135481_power_of_2(self):
+        assert nt.A135481(16) == 15
+
+    def test_A135481_odd(self):
+        assert nt.A135481(15) == 0
+
+
+class TestA007814:
+    def test_A007814_power_of_2(self):
+        assert nt.A007814(8) == 3
+
+    def test_A007814_odd(self):
+        assert nt.A007814(15) == 0
+
+
+class TestMLucas:
+    def test_mlucas_basic(self):
+        result = nt.mlucas(3, 5, 11)
+        assert result is not None
+
+
+class TestDivisors:
+    def test_divisors_1(self):
+        assert nt.divisors(1) == [1]
+
+    def test_divisors_12(self):
+        assert nt.divisors(12) == [1, 2, 3, 4, 6, 12]
+
+    def test_divisors_prime(self):
+        assert nt.divisors(7) == [1, 7]
+
+
+class TestNumDivisors:
+    def test_num_divisors_1(self):
+        assert nt.num_divisors(1) == 1
+
+    def test_num_divisors_12(self):
+        assert nt.num_divisors(12) == 4
+
+
+class TestSumDivisors:
+    def test_sum_divisors_1(self):
+        assert nt.sum_divisors(1) == 1
+
+    def test_sum_divisors_12(self):
+        assert nt.sum_divisors(12) == 28
+
+
+class TestAliquotSum:
+    def test_aliquot_sum_12(self):
+        assert nt.aliquot_sum(12) == 16
+
+
+class TestIsSquareFree:
+    def test_is_square_free_prime(self):
+        assert nt.is_square_free(7) is True
+
+    def test_is_square_free_4(self):
+        assert nt.is_square_free(4) is False
+
+    def test_is_square_free_1(self):
+        assert nt.is_square_free(1) is True
 
 
 class TestIsSquare:
@@ -454,6 +536,68 @@ class TestPartitionFunction:
 
     def test_partition_10(self):
         assert nt.partition_function(10) == 42
+
+
+class TestMobius:
+    def test_mobius_prime(self):
+        assert nt.mobius(7) == -1
+
+    def test_mobius_square(self):
+        assert nt.mobius(4) == 0
+
+    def test_mobius_1(self):
+        assert nt.mobius(1) == 1
+
+
+class TestCarmichaelLambda:
+    def test_carmichael_lambda_1(self):
+        assert nt.carmichael_lambda(1) == 1
+
+    def test_carmichael_lambda_2(self):
+        assert nt.carmichael_lambda(2) == 1
+
+    def test_carmichael_lambda_8(self):
+        assert nt.carmichael_lambda(8) == 2
+
+
+class TestIsSophieGermain:
+    def test_is_sophie_germain_true(self):
+        assert nt.is_sophie_germain(5) is True
+
+    def test_is_sophie_germain_false(self):
+        assert nt.is_sophie_germain(7) is False
+
+
+class TestIsSafePrime:
+    def test_is_safe_prime_true(self):
+        assert nt.is_safe_prime(7) is True
+
+    def test_is_safe_prime_false(self):
+        assert nt.is_safe_prime(13) is False
+
+
+class TestPrimeCounting:
+    def test_prime_counting_10(self):
+        assert nt.prime_counting(10) == 4
+
+    def test_prime_counting_1(self):
+        assert nt.prime_counting(1) == 0
+
+
+class TestNthPrime:
+    def test_nth_prime_1(self):
+        assert nt.nth_prime(1) == 2
+
+    def test_nth_prime_3(self):
+        assert nt.nth_prime(3) == 5
+
+
+class TestMultiplicativeOrder:
+    def test_multiplicative_order_basic(self):
+        assert nt.multiplicative_order(2, 5) == 4
+
+    def test_multiplicative_order_no_inverse(self):
+        assert nt.multiplicative_order(2, 4) is None
 
 
 class TestIsSmooth:
