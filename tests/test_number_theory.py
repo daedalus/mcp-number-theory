@@ -1,6 +1,5 @@
 """Tests for number theory functions."""
 
-
 from mcp_number_theory import number_theory as nt
 
 
@@ -172,3 +171,133 @@ class TestNextPrime:
 
     def test_next_prime_after_prime(self):
         assert nt.next_prime(13) == 17
+
+
+class TestPAdicValuation:
+    def test_p_adic_basic(self):
+        assert nt.p_adic_valuation(100, 2) == 2
+
+    def test_p_adic_prime(self):
+        assert nt.p_adic_valuation(243, 3) == 5
+
+    def test_p_adic_coprime(self):
+        assert nt.p_adic_valuation(30, 7) == 0
+
+    def test_p_adic_negative(self):
+        assert nt.p_adic_valuation(-36, 3) == 2
+
+    def test_p_adic_large_power(self):
+        assert nt.p_adic_valuation(2**20, 2) == 20
+
+    def test_p_adic_one(self):
+        assert nt.p_adic_valuation(1, 5) == 0
+
+    def test_p_adic_powers_of_three(self):
+        assert nt.p_adic_valuation(3**7, 3) == 7
+
+    def test_p_adic_invalid_zero(self):
+        import pytest
+
+        with pytest.raises(ValueError):
+            nt.p_adic_valuation(0, 5)
+
+    def test_p_adic_invalid_prime_zero(self):
+        import pytest
+
+        with pytest.raises(ValueError):
+            nt.p_adic_valuation(10, 0)
+
+
+class TestHenselLiftSquare:
+    def test_hensel_lift_square_simple(self):
+        result = nt.hensel_lift_square(2, 7, 2)
+        assert pow(result, 2, 49) == 2
+
+    def test_hensel_lift_square_high_power(self):
+        result = nt.hensel_lift_square(4, 5, 4)
+        assert pow(result, 2, 625) == 4
+
+    def test_hensel_lift_square_non_residue(self):
+        assert nt.hensel_lift_square(3, 7, 3) is None
+
+    def test_hensel_lift_square_k1(self):
+        result = nt.hensel_lift_square(2, 7, 1)
+        assert result == 3 or result == 4
+
+    def test_hensel_lift_square_larger_prime(self):
+        result = nt.hensel_lift_square(3, 13, 3)
+        assert pow(result, 2, 2197) == 3
+
+    def test_hensel_lift_square_high_power_large(self):
+        result = nt.hensel_lift_square(3, 13, 5)
+        assert pow(result, 2, 371293) == 3
+
+    def test_hensel_lift_square_both_roots(self):
+        r1 = nt.hensel_lift_square(2, 7, 3)
+        r2 = (7**3 - r1) % (7**3)
+        assert pow(r1, 2, 343) == 2
+        assert pow(r2, 2, 343) == 2
+
+
+class TestHenselLift:
+    def test_hensel_lift_polynomial(self):
+        def f(x: int) -> int:
+            return x * x - 2
+
+        def df(x: int) -> int:
+            return 2 * x
+
+        result = nt.hensel_lift(f, df, 3, 7, 3)
+        assert pow(result, 2, 343) == 2
+
+    def test_hensel_lift_cubic(self):
+        def f(x: int) -> int:
+            return x**3 - 2
+
+        def df(x: int) -> int:
+            return 3 * x**2
+
+        result = nt.hensel_lift(f, df, 3, 5, 2)
+        assert pow(result, 3, 25) == 2
+
+    def test_hensel_lift_k1(self):
+        def f(x: int) -> int:
+            return x * x - 3
+
+        def df(x: int) -> int:
+            return 2 * x
+
+        result = nt.hensel_lift(f, df, 5, 11, 1)
+        assert result == 5
+
+    def test_hensel_lift_quartic(self):
+        def f(x: int) -> int:
+            return x**4 - 2
+
+        def df(x: int) -> int:
+            return 4 * x**3
+
+        result = nt.hensel_lift(f, df, 2, 7, 2)
+        assert pow(result, 4, 49) == 2
+
+    def test_hensel_lift_linear(self):
+        def f(x: int) -> int:
+            return 3 * x - 5
+
+        def df(_x: int) -> int:
+            return 3
+
+        result = nt.hensel_lift(f, df, 4, 11, 3)
+        assert (3 * result - 5) % (11**3) == 0
+
+    def test_hensel_lift_invalid_derivative(self):
+        import pytest
+
+        def f(x: int) -> int:
+            return x * x - 2
+
+        def df(x: int) -> int:
+            return 2 * x
+
+        with pytest.raises(ValueError):
+            nt.hensel_lift(f, df, 0, 5, 3)

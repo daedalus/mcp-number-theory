@@ -2,6 +2,7 @@
 
 import math
 import random
+from collections.abc import Callable
 from functools import cache, reduce
 
 try:
@@ -546,6 +547,63 @@ def tonelli(n: int, p: int) -> int:
     return r
 
 
+def p_adic_valuation(n: int, p: int) -> int:
+    """Return the exponent of the highest power of p dividing n."""
+    if n == 0:
+        raise ValueError("p_adic_valuation undefined for zero")
+    if p == 0:
+        raise ValueError("p must be non-zero")
+    count = 0
+    n = abs(n)
+    while n % p == 0:
+        n //= p
+        count += 1
+    return count
+
+
+def hensel_lift_square(a: int, p: int, k: int) -> int | None:
+    """Lift quadratic residue from mod p to mod p^k using Hensel's method.
+
+    Given a square root of a modulo p, lifts it to a square root modulo p^k.
+    """
+    if legendre(a, p) != 1:
+        return None
+    x = tonelli(a, p)
+    modulus = p
+    for _ in range(1, k):
+        modulus *= p
+        f_x = x * x - a
+        x = x - f_x * invmod(2 * x, modulus) % modulus
+    return x
+
+
+def hensel_lift(
+    f: Callable[[int], int], df: Callable[[int], int], x0: int, p: int, k: int
+) -> int:
+    """Lift root x0 of f(x) ≡ 0 (mod p) to modulo p^k using Hensel's method.
+
+    Args:
+        f: Polynomial function f(x)
+        df: Derivative function f'(x)
+        x0: Root of f(x) ≡ 0 (mod p)
+        p: Prime modulus
+        k: Target power (lifts to mod p^k)
+
+    Returns:
+        Root x of f(x) ≡ 0 (mod p^k)
+    """
+    if legendre(df(x0) % p, p) == 0:
+        raise ValueError("Derivative must be non-zero at the root modulo p")
+    x = x0 % p
+    modulus = p
+    for _ in range(1, k):
+        modulus *= p
+        f_x = f(x) % modulus
+        df_x = df(x) % modulus
+        x = (x - f_x * invmod(df_x, modulus)) % modulus
+    return x
+
+
 def dlp_bruteforce(g: int, h: int, p: int) -> int | None:
     """Solve discrete logarithm problem by brute force: find x such that g^x ≡ h (mod p)."""
     for x in range(1, p):
@@ -635,6 +693,342 @@ def find_period(n: int) -> int:
 def trivial_factorization_with_n_phi(n: int, phi: int) -> tuple[int, int] | None:
     """Factor n given phi(n)."""
     return trivial_factorization_with_n_b(n, n - phi + 1)
+
+
+# =============================================================================
+# Multiplicative Number Theory Functions
+# =============================================================================
+
+
+def jacobi(a: int, n: int) -> int:
+    """Jacobi symbol (a/n). Returns -1, 0, or 1."""
+    if n <= 0 or n % 2 == 0:
+        raise ValueError("n must be an odd positive integer")
+    a = a % n
+    result = 1
+    while a != 0:
+        while a % 2 == 0:
+            a //= 2
+            if n % 8 in [3, 5]:
+                result = -result
+        a, n = n, a
+        if a % 4 == 3 and n % 4 == 3:
+            result = -result
+        a = a % n
+    return result
+
+
+def mobius(n: int) -> int:
+    """Möbius function. Returns 0 if n has squared prime factor, else (-1)^k."""
+    if n <= 0:
+        raise ValueError("n must be positive")
+    if n == 1:
+        return 1
+    prime_factors: set[int] = set()
+    temp = n
+    for p in range(2, int(temp**0.5) + 1):
+        if temp % p == 0:
+            prime_factors.add(p)
+            while temp % p == 0:
+                temp //= p
+                return 0
+    if temp > 1:
+        prime_factors.add(temp)
+    return -1 if len(prime_factors) % 2 else 1
+
+
+def is_square_free(n: int) -> bool:
+    """Check if n is square-free (no prime factor appears more than once)."""
+    if n <= 0:
+        raise ValueError("n must be positive")
+    if n == 1:
+        return True
+    for p in range(2, int(n**0.5) + 1):
+        if n % (p * p) == 0:
+            return False
+    return True
+
+
+def carmichael_lambda(n: int) -> int:
+    """Carmichael function - exponent of the multiplicative group mod n."""
+    if n <= 0:
+        raise ValueError("n must be positive")
+    if n == 1:
+        return 1
+    if n == 2:
+        return 1
+    if n == 3:
+        return 2
+
+    factors = prime_factors(n)
+    result = 1
+    for p in factors:
+        if p == 2 and n % 4 == 0:
+            exp = max(2, prime_exp(p, n))
+            result = lcm(result, 2 ** (exp - 2))
+        else:
+            exp = prime_exp(p, n)
+            result = lcm(result, (p - 1) * p ** (exp - 1))
+    return result
+
+
+def prime_factors(n: int) -> list[int]:
+    """Return list of distinct prime factors of n."""
+    if n <= 0:
+        raise ValueError("n must be positive")
+    if n == 1:
+        return []
+    factors: list[int] = []
+    d = 2
+    while d * d <= n:
+        if n % d == 0:
+            factors.append(d)
+            while n % d == 0:
+                n //= d
+        d += 1 if d == 2 else 2
+    if n > 1:
+        factors.append(n)
+    return factors
+
+
+def prime_exp(p: int, n: int) -> int:
+    """Return exponent of prime p in factorization of n."""
+    if p <= 0 or n <= 0:
+        raise ValueError("p and n must be positive")
+    count = 0
+    while n % p == 0:
+        n //= p
+        count += 1
+    return count
+
+
+# =============================================================================
+# Divisor Functions
+# =============================================================================
+
+
+def divisors(n: int) -> list[int]:
+    """Return all positive divisors of n in ascending order."""
+    if n <= 0:
+        raise ValueError("n must be positive")
+    divs = []
+    for i in range(1, int(n**0.5) + 1):
+        if n % i == 0:
+            divs.append(i)
+            if i != n // i:
+                divs.append(n // i)
+    return sorted(divs)
+
+
+def num_divisors(n: int) -> int:
+    """Number of divisors function tau(n)."""
+    if n <= 0:
+        raise ValueError("n must be positive")
+    if n == 1:
+        return 1
+    factors = prime_factors(n)
+    count = 1
+    for p in set(factors):
+        count *= factors.count(p) + 1
+    return count
+
+
+def sum_divisors(n: int) -> int:
+    """Sum of all positive divisors sigma(n)."""
+    if n <= 0:
+        raise ValueError("n must be positive")
+    total = 0
+    for i in range(1, int(n**0.5) + 1):
+        if n % i == 0:
+            total += i
+            if i != n // i:
+                total += n // i
+    return total
+
+
+def aliquot_sum(n: int) -> int:
+    """Sum of proper divisors (excluding n itself)."""
+    return sum_divisors(n) - n
+
+
+# =============================================================================
+# Prime Functions
+# =============================================================================
+
+
+def is_sophie_germain(p: int) -> bool:
+    """Check if p is a Sophie Germain prime (p and 2p+1 are both prime)."""
+    if p <= 2:
+        return False
+    return is_prime(p) and is_prime(2 * p + 1)
+
+
+def is_safe_prime(p: int) -> bool:
+    """Check if p is a safe prime (p = 2q + 1 where q is prime)."""
+    if p <= 3:
+        return False
+    q = (p - 1) // 2
+    return is_prime(p) and is_prime(q)
+
+
+def prime_counting(x: int) -> int:
+    """Count primes <= x using simple sieve."""
+    if x < 2:
+        return 0
+    sieve = [True] * (x + 1)
+    sieve[0] = sieve[1] = False
+    for i in range(2, int(x**0.5) + 1):
+        if sieve[i]:
+            for j in range(i * i, x + 1, i):
+                sieve[j] = False
+    return sum(sieve)
+
+
+def nth_prime(n: int) -> int:
+    """Return the nth prime (1-indexed, nth_prime(1) = 2)."""
+    if n <= 0:
+        raise ValueError("n must be positive")
+    if n == 1:
+        return 2
+    estimate = int(n * (math.log(n) + math.log(math.log(n)))) + 10
+    while True:
+        sieve = [True] * (estimate + 1)
+        sieve[0] = sieve[1] = False
+        for i in range(2, int(estimate**0.5) + 1):
+            if sieve[i]:
+                for j in range(i * i, estimate + 1, i):
+                    sieve[j] = False
+        count = sum(sieve)
+        if count >= n:
+            for i in range(2, estimate + 1):
+                if sieve[i]:
+                    n -= 1
+                    if n == 0:
+                        return i
+        estimate *= 2
+
+
+def is_prime_power(n: int) -> tuple[int, int] | None:
+    """Check if n = p^k for some prime p. Returns (p, k) if true, None otherwise."""
+    if n <= 1:
+        return None
+    for p in range(2, int(n**0.5) + 1):
+        if n % p == 0:
+            k = 0
+            temp = n
+            while temp % p == 0:
+                temp //= p
+                k += 1
+            if temp == 1:
+                return (p, k)
+    return (n, 1) if is_prime(n) else None
+
+
+# =============================================================================
+# Modular Functions
+# =============================================================================
+
+
+def multiplicative_order(a: int, n: int) -> int | None:
+    """Find multiplicative order of a modulo n. Returns None if gcd(a, n) != 1."""
+    if gcd(a, n) != 1:
+        return None
+    if n == 1:
+        return 1
+    order = 1
+    current = a % n
+    target = 1
+    while current != target:
+        current = (current * a) % n
+        order += 1
+        if order > phi(n, prime_factors(n)):
+            return None
+    return order
+
+
+def discrete_log_baby_step_giant_step(g: int, h: int, p: int) -> int | None:
+    """Solve g^x ≡ h (mod p) using baby-step giant-step. Returns x or None."""
+    if not is_prime(p):
+        return None
+    if gcd(g, p) != 1:
+        return None
+
+    m = int(p**0.5) + 1
+
+    baby: dict[int, int] = {}
+    for j in range(m):
+        baby[pow(g, j, p)] = j
+
+    g_inv = invmod(g, p)
+    g_m = pow(g_inv, m, p)
+
+    giant = h % p
+    for i in range(m):
+        if giant in baby:
+            return i * m + baby[giant]
+        giant = (giant * g_m) % p
+
+    return None
+
+
+def kronecker_symbol(a: int, n: int) -> int:
+    """Kronecker symbol (a/n), generalization of Legendre symbol."""
+    if n == 0:
+        if a == 0 or abs(a) == 1:
+            return 1
+        return 0
+    if n < 0:
+        n = -n
+        if a < 0:
+            a = -a
+
+    if n == 1:
+        return 1
+
+    result = 1
+    if a < 0:
+        a = -a
+        if n % 4 == 3:
+            result = -result
+
+    while a > 0:
+        if a % 2 == 0:
+            a //= 2
+            if n % 8 in [3, 5]:
+                result = -result
+        a, n = n, a
+        if a % 4 == 3 and n % 4 == 3:
+            result = -result
+        a = a % n
+
+    return result if n == 1 else 0
+
+
+# =============================================================================
+# Rational Approximation
+# =============================================================================
+
+
+def best_rational_approximation(x: float, max_denom: int) -> tuple[int, int]:
+    """Find best rational approximation to x with denominator <= max_denom."""
+    if max_denom <= 0:
+        raise ValueError("max_denom must be positive")
+    if max_denom == 1:
+        return (1, 1) if x >= 0.5 else (0, 1)
+
+    best_num, best_den = 0, 1
+    best_err = abs(x)
+
+    for den in range(1, max_denom + 1):
+        num = int(x * den + 0.5)
+        for n in [num - 1, num, num + 1]:
+            if n < 0:
+                continue
+            err = abs(x - n / den)
+            if err < best_err:
+                best_num, best_den, best_err = n, den, err
+
+    return (best_num, best_den)
 
 
 def trivial_factorization_with_n_b(n: int, b: int) -> tuple[int, int] | None:

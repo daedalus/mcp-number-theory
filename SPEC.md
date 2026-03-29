@@ -31,6 +31,8 @@ An MCP server that exposes number theory functions and factorization algorithms 
 - `chinese_remainder(m, a)` - CRT solver
 - `legendre(a, p)` - Legendre symbol
 - `tonelli(n, p)` - Tonelli-Shanks sqrt
+- `p_adic_valuation(n, p)` - p-adic valuation (exponent of p dividing n)
+- `hensel_lift_square(a, p, k)` - Lift square root from mod p to mod p^k
 - `dlp_bruteforce(g, h, p)` - Discrete log brute force
 - `fac(n)` - Factorial
 - `lucas(n)` - Lucas number

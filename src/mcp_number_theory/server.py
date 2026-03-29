@@ -136,6 +136,18 @@ def tonelli(n: int, p: int) -> int:
 
 
 @mcp.tool()
+def p_adic_valuation(n: int, p: int) -> int:
+    """Return the exponent of the highest power of p dividing n."""
+    return nt.p_adic_valuation(n, p)
+
+
+@mcp.tool()
+def hensel_lift_square(a: int, p: int, k: int) -> int | None:
+    """Lift quadratic residue from mod p to mod p^k using Hensel's method."""
+    return nt.hensel_lift_square(a, p, k)
+
+
+@mcp.tool()
 def dlp_bruteforce(g: int, h: int, p: int) -> int | None:
     """Solve discrete logarithm by brute force: find x such that g^x ≡ h (mod p)."""
     return nt.dlp_bruteforce(g, h, p)
@@ -339,3 +351,136 @@ def close_factor(n: int, b: int) -> tuple[int, int] | None:
 def inverseinversesqrt2exp(n: int, k: int) -> int:
     """Compute modular inverse square root approximation with k bits."""
     return algos.InverseInverseSqrt2exp(n, k)
+
+
+# =============================================================================
+# Multiplicative Number Theory
+# =============================================================================
+
+
+@mcp.tool()
+def jacobi(a: int, n: int) -> int:
+    """Compute Jacobi symbol (a/n). Returns -1, 0, or 1."""
+    return nt.jacobi(a, n)
+
+
+@mcp.tool()
+def mobius(n: int) -> int:
+    """Compute Möbius function. Returns 0 if n has squared prime factor."""
+    return nt.mobius(n)
+
+
+@mcp.tool()
+def is_square_free(n: int) -> bool:
+    """Check if n is square-free."""
+    return nt.is_square_free(n)
+
+
+@mcp.tool()
+def carmichael_lambda(n: int) -> int:
+    """Compute Carmichael function (exponent of multiplicative group mod n)."""
+    return nt.carmichael_lambda(n)
+
+
+@mcp.tool()
+def prime_factors(n: int) -> list[int]:
+    """Return list of distinct prime factors of n."""
+    return nt.prime_factors(n)
+
+
+# =============================================================================
+# Divisor Functions
+# =============================================================================
+
+
+@mcp.tool()
+def divisors(n: int) -> list[int]:
+    """Return all positive divisors of n in ascending order."""
+    return nt.divisors(n)
+
+
+@mcp.tool()
+def num_divisors(n: int) -> int:
+    """Count number of positive divisors of n (tau function)."""
+    return nt.num_divisors(n)
+
+
+@mcp.tool()
+def sum_divisors(n: int) -> int:
+    """Compute sum of all positive divisors of n (sigma function)."""
+    return nt.sum_divisors(n)
+
+
+@mcp.tool()
+def aliquot_sum(n: int) -> int:
+    """Compute sum of proper divisors (excluding n)."""
+    return nt.aliquot_sum(n)
+
+
+# =============================================================================
+# Prime Functions
+# =============================================================================
+
+
+@mcp.tool()
+def is_sophie_germain(p: int) -> bool:
+    """Check if p is a Sophie Germain prime (p and 2p+1 are both prime)."""
+    return nt.is_sophie_germain(p)
+
+
+@mcp.tool()
+def is_safe_prime(p: int) -> bool:
+    """Check if p is a safe prime (p = 2q + 1 where q is prime)."""
+    return nt.is_safe_prime(p)
+
+
+@mcp.tool()
+def prime_counting(x: int) -> int:
+    """Count primes <= x."""
+    return nt.prime_counting(x)
+
+
+@mcp.tool()
+def nth_prime(n: int) -> int:
+    """Return the nth prime (1-indexed)."""
+    return nt.nth_prime(n)
+
+
+@mcp.tool()
+def is_prime_power(n: int) -> tuple[int, int] | None:
+    """Check if n = p^k for some prime p. Returns (p, k) if true."""
+    return nt.is_prime_power(n)
+
+
+# =============================================================================
+# Modular Functions
+# =============================================================================
+
+
+@mcp.tool()
+def multiplicative_order(a: int, n: int) -> int | None:
+    """Find multiplicative order of a modulo n."""
+    return nt.multiplicative_order(a, n)
+
+
+@mcp.tool()
+def discrete_log(g: int, h: int, p: int) -> int | None:
+    """Solve g^x ≡ h (mod p) using baby-step giant-step."""
+    return nt.discrete_log_baby_step_giant_step(g, h, p)
+
+
+@mcp.tool()
+def kronecker_symbol(a: int, n: int) -> int:
+    """Compute Kronecker symbol (a/n)."""
+    return nt.kronecker_symbol(a, n)
+
+
+# =============================================================================
+# Rational Approximation
+# =============================================================================
+
+
+@mcp.tool()
+def best_rational_approximation(x: float, max_denom: int) -> tuple[int, int]:
+    """Find best rational approximation to x with denominator <= max_denom."""
+    return nt.best_rational_approximation(x, max_denom)
