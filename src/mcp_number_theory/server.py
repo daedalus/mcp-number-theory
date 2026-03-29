@@ -11,32 +11,47 @@ mcp = fastmcp.FastMCP("mcp-number-theory")
 @mcp.tool()
 def gcd(a: int, b: int) -> int:
     """Compute the greatest common divisor of a and b."""
-    return nt.gcd(a, b)
+    return int(nt.gcd(a, b))
 
 
 @mcp.tool()
 def isqrt(n: int) -> int:
     """Compute the integer square root of n."""
-    return nt.isqrt(n)
+    return int(nt.isqrt(n))
 
 
 @mcp.tool()
 def introot(n: int, r: int = 2) -> int | None:
     """Compute the integer r-th root of n. Returns None if not a perfect r-th power."""
-    return nt.introot(n, r)
+    result = nt.introot(n, r)
+    return int(result) if result is not None else None
 
 
 @mcp.tool()
 def invmod(a: int, m: int) -> int:
     """Compute the modular inverse of a modulo m."""
-    return nt.invmod(a, m)
+    return int(nt.invmod(a, m))
 
 
 @mcp.tool()
 def gcdext(a: int, b: int) -> dict[str, int]:
-    """Compute the extended GCD of a and b. Returns dict with g, x, y where g = ax + by."""
+    """Compute the extended GCD of a and b.
+
+    Returns a dict with g, x, y where g = gcd(a,b) and ax + by = g.
+
+    Args:
+        a: First integer
+        b: Second integer
+
+    Returns:
+        Dict with keys 'g' (gcd), 'x', 'y' satisfying ax + by = g
+
+    Example:
+        >>> gcdext(48, 18)
+        {'g': 6, 'x': -1, 'y': 3}
+    """
     result = nt.gcdext(a, b)
-    return {"g": result[0], "x": result[1], "y": result[2]}
+    return {"g": int(result[0]), "x": int(result[1]), "y": int(result[2])}
 
 
 @mcp.tool()
@@ -48,13 +63,13 @@ def is_square(n: int) -> bool:
 @mcp.tool()
 def is_cube(n: int) -> bool:
     """Check if n is a perfect cube."""
-    return nt.is_cube(n)
+    return bool(nt.is_cube(n))
 
 
 @mcp.tool()
 def next_prime(n: int) -> int:
     """Find the next prime after n."""
-    return nt.next_prime(n)
+    return int(nt.next_prime(n))
 
 
 @mcp.tool()
@@ -66,85 +81,102 @@ def is_prime(n: int) -> bool:
 @mcp.tool()
 def fib(n: int) -> int:
     """Compute the n-th Fibonacci number."""
-    return nt.fib(n)
+    return int(nt.fib(n))
 
 
 @mcp.tool()
 def primes(n: int) -> list[int]:
     """Return a list of the first n primes."""
-    return nt.primes(n)
+    return [int(p) for p in nt.primes(n)]
 
 
 @mcp.tool()
 def lcm(x: int, y: int) -> int:
     """Compute the least common multiple of x and y."""
-    return nt.lcm(x, y)
+    return int(nt.lcm(x, y))
 
 
 @mcp.tool()
 def invert(a: int, b: int) -> int:
     """Compute the modular inverse of a modulo b using Fermat's little theorem."""
-    return nt.invert(a, b)
+    return int(nt.invert(a, b))
 
 
 @mcp.tool()
 def powmod(b: int, e: int, m: int) -> int:
     """Compute b^e mod m using modular exponentiation."""
-    return nt.powmod(b, e, m)
+    return int(nt.powmod(b, e, m))
 
 
 @mcp.tool()
 def ilog2(n: int) -> int:
     """Compute the integer log base 2 of n."""
-    return nt.ilog2(n)
+    return int(nt.ilog2(n))
 
 
 @mcp.tool()
 def ilog(n: int) -> int:
     """Compute the integer log of n (natural log)."""
-    return nt.ilog(n)
+    return int(nt.ilog(n))
 
 
 @mcp.tool()
 def ilog10(n: int) -> int:
     """Compute the integer log base 10 of n."""
-    return nt.ilog10(n)
+    return int(nt.ilog10(n))
 
 
 @mcp.tool()
 def phi(n: int, factors: list[int]) -> int:
     """Compute Euler's totient function phi(n) given the prime factors of n."""
-    return nt.phi(n, factors)
+    return int(nt.phi(n, factors))
 
 
 @mcp.tool()
 def chinese_remainder(m: list[int], a: list[int]) -> int:
-    """Solve the Chinese Remainder Theorem. Given moduli m and remainders a, find x such that x ≡ a[i] (mod m[i])."""
-    return nt.chinese_remainder(m, a)
+    """Solve the Chinese Remainder Theorem.
+
+    Given moduli m and remainders a, find x such that x ≡ a[i] (mod m[i]).
+    The moduli must be pairwise coprime.
+
+    Args:
+        m: List of moduli (pairwise coprime)
+        a: List of remainders
+
+    Returns:
+        The smallest non-negative solution x
+
+    Example:
+        >>> chinese_remainder([3, 5], [2, 3])
+        8
+        # Since 8 ≡ 2 (mod 3) and 8 ≡ 3 (mod 5)
+    """
+    return int(nt.chinese_remainder(m, a))
 
 
 @mcp.tool()
 def legendre(a: int, p: int) -> int:
     """Compute the Legendre symbol (a/p)."""
-    return nt.legendre(a, p)
+    return int(nt.legendre(a, p))
 
 
 @mcp.tool()
 def tonelli(n: int, p: int) -> int:
     """Compute the modular square root using Tonelli-Shanks algorithm. Returns x such that x^2 ≡ n (mod p)."""
-    return nt.tonelli(n, p)
+    return int(nt.tonelli(n, p))
 
 
 @mcp.tool()
 def p_adic_valuation(n: int, p: int) -> int:
     """Return the exponent of the highest power of p dividing n."""
-    return nt.p_adic_valuation(n, p)
+    return int(nt.p_adic_valuation(n, p))
 
 
 @mcp.tool()
 def hensel_lift_square(a: int, p: int, k: int) -> int | None:
     """Lift quadratic residue from mod p to mod p^k using Hensel's method."""
-    return nt.hensel_lift_square(a, p, k)
+    result = nt.hensel_lift_square(a, p, k)
+    return int(result) if result is not None else None
 
 
 @mcp.tool()
@@ -168,13 +200,13 @@ def dlp_bruteforce(g: int, h: int, p: int) -> int | None:
 @mcp.tool()
 def fac(n: int) -> int:
     """Compute the factorial of n."""
-    return nt.fac(n)
+    return int(nt.fac(n))
 
 
 @mcp.tool()
 def lucas(n: int) -> int:
     """Compute the n-th Lucas number."""
-    return nt.lucas(n)
+    return int(nt.lucas(n))
 
 
 @mcp.tool()
@@ -186,19 +218,23 @@ def is_lucas(n: int) -> bool:
 @mcp.tool()
 def find_period(n: int) -> int:
     """Find the period of n in binary representation."""
-    return nt.find_period(n)
+    return int(nt.find_period(n))
 
 
 @mcp.tool()
 def trivial_factorization_with_n_phi(n: int, phi: int) -> tuple[int, int] | None:
     """Factor n given phi(n). Returns (p, q) if found, None otherwise."""
-    return nt.trivial_factorization_with_n_phi(n, phi)
+    result = nt.trivial_factorization_with_n_phi(n, phi)
+    if result is None:
+        return None
+    return (int(result[0]), int(result[1]))
 
 
 @mcp.tool()
 def brent(n: int) -> int:
     """Factor n using Brent's algorithm (Pollard rho with optimizations). Returns a factor."""
-    return algos.brent(n)
+    result = algos.brent(n)
+    return int(result) if result is not None else None
 
 
 @mcp.tool()
@@ -210,103 +246,160 @@ def carmichael(n: int) -> list[tuple[int, int]]:
 @mcp.tool()
 def fermat(n: int) -> tuple[int, int]:
     """Factor n using Fermat's factorization method. Returns (p, q)."""
-    return algos.fermat(n)
+    result = algos.fermat(n)
+    return (int(result[0]), int(result[1]))
 
 
 @mcp.tool()
 def pollard_rho(n: int) -> int:
     """Factor n using Pollard's rho algorithm. Returns a factor."""
-    return algos.pollard_rho(n)
+    return int(algos.pollard_rho(n))
 
 
 @mcp.tool()
 def pollard_P_1(n: int) -> tuple[int, int] | None:
     """Factor n using Pollard's P-1 algorithm. Returns (p, q) if found."""
-    return algos.pollard_P_1(n)
+    result = algos.pollard_P_1(n)
+    if result is None:
+        return None
+    return (int(result[0]), int(result[1]))
 
 
 @mcp.tool()
 def williams_pp1(n: int) -> tuple[int, int] | None:
     """Factor n using Williams' P+1 algorithm. Returns (p, q) if found."""
-    return algos.williams_pp1(n)
+    result = algos.williams_pp1(n)
+    if result is None:
+        return None
+    return (int(result[0]), int(result[1]))
 
 
 @mcp.tool()
 def shor(n: int) -> tuple[int, int] | None:
     """Factor n using Shor's algorithm (classical part). Returns (p, q) if found."""
-    return algos.shor(n)
+    result = algos.shor(n)
+    if result is None:
+        return None
+    return (int(result[0]), int(result[1]))
 
 
 @mcp.tool()
 def SQUFOF(n: int) -> tuple[int, int] | None:
     """Factor n using Shanks' Square Forms Factorization. Returns (p, q) if found."""
-    return algos.SQUFOF(n)
+    result = algos.SQUFOF(n)
+    if result is None:
+        return None
+    return (int(result[0]), int(result[1]))
 
 
 @mcp.tool()
 def hart(n: int) -> tuple[int, int]:
     """Factor n using Hart's one-line factorization. Returns (p, q)."""
-    return algos.hart(n)
+    result = algos.hart(n)
+    return (int(result[0]), int(result[1]))
 
 
 @mcp.tool()
 def kraitchik(n: int) -> tuple[int, int]:
     """Factor n using Kraitchik factorization. Returns (p, q)."""
-    return algos.kraitchik(n)
+    result = algos.kraitchik(n)
+    return (int(result[0]), int(result[1]))
 
 
 @mcp.tool()
 def lehman(n: int) -> tuple[int, int] | None:
     """Factor n using Lehman's factorization algorithm. Returns (p, q) if found."""
-    return algos.lehman(n)
+    result = algos.lehman(n)
+    if result is None:
+        return None
+    return (int(result[0]), int(result[1]))
 
 
 @mcp.tool()
 def euler_factorization(n: int) -> tuple[int, int] | None:
     """Factor n using Euler's factorization method. Returns (p, q) if found."""
-    return algos.euler(n)
+    result = algos.euler(n)
+    if result is None:
+        return None
+    return (int(result[0]), int(result[1]))
 
 
 @mcp.tool()
 def dixon(n: int) -> tuple[int, int] | None:
     """Factor n using Dixon's factorization method. Returns (p, q) if found."""
-    return algos.dixon(n)
+    result = algos.dixon(n)
+    if result is None:
+        return None
+    return (int(result[0]), int(result[1]))
 
 
 @mcp.tool()
 def wiener(n: int, e: int) -> tuple[int, int] | None:
     """Attack RSA using Wiener's method given modulus n and public exponent e. Returns (p, q) if vulnerable."""
-    return algos.wiener(n, e)
+    result = algos.wiener(n, e)
+    if result is None:
+        return None
+    return (int(result[0]), int(result[1]))
 
 
 @mcp.tool()
 def pollard_strassen(n: int) -> tuple[int, int] | None:
     """Factor n using Pollard-Strassen algorithm. Returns (p, q) if found."""
-    return algos.pollard_strassen(n)
+    result = algos.pollard_strassen(n)
+    if result is None:
+        return None
+    return (int(result[0]), int(result[1]))
 
 
 @mcp.tool()
 def factor_XYXZ(n: int, base: int = 3) -> tuple[int, int] | None:
     """Factor integer of form x^y * x^z. Returns (p, q) if found."""
-    return algos.factor_XYXZ(n, base)
+    result = algos.factor_XYXZ(n, base)
+    if result is None:
+        return None
+    return (int(result[0]), int(result[1]))
 
 
 @mcp.tool()
-def factor_2PN(n: int, p_val: int = 3) -> tuple[int, int] | None:
-    """Factor n with P prime > 2. Returns (p, q) if found."""
-    return algos.factor_2PN(n, p_val)
+def factor_2PN(n: int, p_val: int = 3) -> tuple[int, int] | str:
+    """Factor n where one factor is the prime P (p_val).
+
+    Finds factors (p, q) such that n = p * q where p = p_val.
+    Only works when n has p_val as one of its prime factors.
+
+    Args:
+        n: The integer to factor
+        p_val: The prime factor to look for (default: 3)
+
+    Returns:
+        Tuple (p, q) where p = p_val and q = n/p, or "No factorization found"
+
+    Example:
+        >>> factor_2PN(15)
+        (3, 5)
+        >>> factor_2PN(14)
+        'No factorization found'
+    """
+    result = algos.factor_2PN(n, p_val)
+    if result is None:
+        return "No factorization found"
+    return (int(result[0]), int(result[1]))
 
 
 @mcp.tool()
 def lehmer_machine(n: int) -> tuple[int, int]:
     """Factor n using Lehmer's machine (fermat-based). Returns (p, q)."""
-    return algos.lehmer_machine(n)
+    result = algos.lehmer_machine(n)
+    return (int(result[0]), int(result[1]))
 
 
 @mcp.tool()
 def repunit_factor(n: int) -> tuple[int, int] | None:
     """Factor n using repunit properties. Returns (p, q) if found."""
-    return algos.repunit_factor(n)
+    result = algos.repunit_factor(n)
+    if result is None:
+        return None
+    return (int(result[0]), int(result[1]))
 
 
 @mcp.tool()
@@ -314,55 +407,62 @@ def factor_high_and_low_bits_equal(
     n: int, max_middle_bits: int = 24
 ) -> tuple[int, int] | None:
     """Factor when high and low bits are equal. Returns (p, q) if found."""
-    return algos.factor_high_and_low_bits_equal(n, max_middle_bits)
+    result = algos.factor_high_and_low_bits_equal(n, max_middle_bits)
+    if result is None:
+        return None
+    return (int(result[0]), int(result[1]))
 
 
 @mcp.tool()
 def difference_of_powers_factor(n: int) -> list[int]:
     """Factor using difference of powers method. Returns list of factors."""
-    return algos.difference_of_powers_factor(n)
+    return [int(f) for f in algos.difference_of_powers_factor(n)]
 
 
 @mcp.tool()
 def getpubkeysz(n: int) -> int:
     """Get public key size in bits."""
-    return nt.getpubkeysz(n)
+    return int(nt.getpubkeysz(n))
 
 
 @mcp.tool()
 def neg_pow(a: int, b: int, n: int) -> int:
     """Calculate a^b mod n when b is negative."""
-    return nt.neg_pow(a, b, n)
+    return int(nt.neg_pow(a, b, n))
 
 
 @mcp.tool()
 def contfrac_to_rational(frac: list[int]) -> tuple[int, int]:
     """Convert continued fraction to rational number."""
-    return nt.contfrac_to_rational(frac)
+    result = nt.contfrac_to_rational(frac)
+    return (int(result[0]), int(result[1]))
 
 
 @mcp.tool()
 def powmod_base_list(base_lst: list[int], exp: int, mod: int) -> list[int]:
     """Compute powmod for a list of bases."""
-    return nt.powmod_base_list(base_lst, exp, mod)
+    return [int(x) for x in nt.powmod_base_list(base_lst, exp, mod)]
 
 
 @mcp.tool()
 def powmod_exp_list(base: int, exp_lst: list[int], mod: int) -> list[int]:
     """Compute powmod for a list of exponents."""
-    return nt.powmod_exp_list(base, exp_lst, mod)
+    return [int(x) for x in nt.powmod_exp_list(base, exp_lst, mod)]
 
 
 @mcp.tool()
 def close_factor(n: int, b: int) -> tuple[int, int] | None:
     """Factor n using close factor algorithm. Returns (p, q) if found."""
-    return algos.close_factor(n, b)
+    result = algos.close_factor(n, b)
+    if result is None:
+        return None
+    return (int(result[0]), int(result[1]))
 
 
 @mcp.tool()
 def inverseinversesqrt2exp(n: int, k: int) -> int:
     """Compute modular inverse square root approximation with k bits."""
-    return algos.InverseInverseSqrt2exp(n, k)
+    return int(algos.InverseInverseSqrt2exp(n, k))
 
 
 # =============================================================================
@@ -391,13 +491,13 @@ def is_square_free(n: int) -> bool:
 @mcp.tool()
 def carmichael_lambda(n: int) -> int:
     """Compute Carmichael function (exponent of multiplicative group mod n)."""
-    return nt.carmichael_lambda(n)
+    return int(nt.carmichael_lambda(n))
 
 
 @mcp.tool()
 def prime_factors(n: int) -> list[int]:
     """Return list of distinct prime factors of n."""
-    return nt.prime_factors(n)
+    return [int(p) for p in nt.prime_factors(n)]
 
 
 # =============================================================================
@@ -408,7 +508,7 @@ def prime_factors(n: int) -> list[int]:
 @mcp.tool()
 def divisors(n: int) -> list[int]:
     """Return all positive divisors of n in ascending order."""
-    return nt.divisors(n)
+    return [int(d) for d in nt.divisors(n)]
 
 
 @mcp.tool()
@@ -449,13 +549,13 @@ def is_safe_prime(p: int) -> bool:
 @mcp.tool()
 def prime_counting(x: int) -> int:
     """Count primes <= x."""
-    return nt.prime_counting(x)
+    return int(nt.prime_counting(x))
 
 
 @mcp.tool()
 def nth_prime(n: int) -> int:
     """Return the nth prime (1-indexed)."""
-    return nt.nth_prime(n)
+    return int(nt.nth_prime(n))
 
 
 @mcp.tool()
@@ -534,7 +634,10 @@ def lucas_lehmer(p: int) -> bool:
 @mcp.tool()
 def solve_linear_diophantine(a: int, b: int, c: int) -> tuple[int, int] | None:
     """Solve ax + by = c for integers x, y. Returns (x, y) or None if no solution."""
-    return nt.solve_linear_diophantine(a, b, c)
+    result = nt.solve_linear_diophantine(a, b, c)
+    if result is None:
+        return None
+    return (int(result[0]), int(result[1]))
 
 
 # =============================================================================
@@ -545,7 +648,10 @@ def solve_linear_diophantine(a: int, b: int, c: int) -> tuple[int, int] | None:
 @mcp.tool()
 def sum_of_two_squares(n: int) -> tuple[int, int] | None:
     """Return (a, b) such that n = a^2 + b^2, or None if not representable."""
-    return nt.sum_of_two_squares(n)
+    result = nt.sum_of_two_squares(n)
+    if result is None:
+        return None
+    return (int(result[0]), int(result[1]))
 
 
 # =============================================================================
@@ -556,7 +662,7 @@ def sum_of_two_squares(n: int) -> tuple[int, int] | None:
 @mcp.tool()
 def partition_function(n: int) -> int:
     """Compute partition function p(n) - number of ways to write n as sum of positive integers."""
-    return nt.partition_function(n)
+    return int(nt.partition_function(n))
 
 
 # =============================================================================
@@ -589,7 +695,8 @@ def aks_primality(n: int) -> bool:
 @mcp.tool()
 def solve_pell(D: int) -> tuple[int, int]:
     """Solve x^2 - D*y^2 = 1, returning fundamental solution (x, y)."""
-    return nt.solve_pell(D)
+    result = nt.solve_pell(D)
+    return (int(result[0]), int(result[1]))
 
 
 # =============================================================================
@@ -600,7 +707,7 @@ def solve_pell(D: int) -> tuple[int, int]:
 @mcp.tool()
 def frobenius_number(a: int, b: int) -> int:
     """Compute Frobenius number for coprime coin denominations a, b."""
-    return nt.frobenius_number(a, b)
+    return int(nt.frobenius_number(a, b))
 
 
 # =============================================================================
